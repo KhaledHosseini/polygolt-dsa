@@ -1,5 +1,7 @@
-- [Physical layer](#physical-layer)
-- [Virtual layer](#virtual-layer)
+In this article I try to dive into 
+
+- [Memory: Physical layer](#memory-physical-layer)
+- [Memory: Virtual layer](#memory-virtual-layer)
     - [Location](#location)
     - [Arrangement](#arrangement)
 - [Algorithms](#algorithms)
@@ -47,9 +49,9 @@
       - [UnorderedSet](#unorderedset)
       - [OrderedSet via HashTable and LinkedList](#orderedset-via-hashtable-and-linkedlist)
       - [SortedSet via Self Balancing Tree](#sortedset-via-self-balancing-tree)
-  - [Non-Linear structures](#non-linear-structures)
+  - [Non-Linear data structures](#non-linear-data-structures)
 
-Imagine you have a bunch of data-blocks. |A|,|B|,|C|,|D|,|E|,... Your goal is to solve a problem by putting this data in an algorithm and get the result. Depending on the problem and the algorithm, you need to go through some steps like this:
+Suppose you have a collection of data blocks, denoted as |A|, |B|, |C|, |D|, |E|, and so on. Your objective is to solve a problem by employing an algorithm that processes this data and produces a result. Irrespective of the specific problem or algorithm you opt for, there are certain steps that need to be followed:
 1. Allocate some space (memory) to your data.
 2. Arrange your data-blocks in the allocated space and create a logical relationship(Implicit or explicit) among them (Specify a `Data Structure`).
 3. Doing Some operations on the data-blocks(`Algorithm`): These operations may include:
@@ -60,17 +62,17 @@ Data structures and algorithms are closely intertwined concepts. Certain algorit
 
 ---
 
-# Physical layer
+# Memory: Physical layer
 The physical layer of a computer system is responsible for the actual storage and retrieval of data in electronic or magnetic form. Memory in the physical layer is organized hierarchically, with different types and levels of memory. Types of Memory in the Physical Layer:
 - Registers
 - Cache Memory
 - Main Memory (Random Access Memory - RAM)
-- Secondary memories: (HDD,SSD,...)
+- Secondary memories: (HDD,SSD,...)<b>
 Physical memory is invisible to programs in virtual memory systems and as a programmer you're not required to reason about it.
 
 ---
 
-# Virtual layer
+# Memory: Virtual layer
 
 Where and how memory is being allocated in virtual layer?
 
@@ -91,7 +93,7 @@ Where and how memory is being allocated in virtual layer?
 ---
 
 # Algorithms
-The base operations for all algorithms are `access` to and possibly `mutate` the data blocks regardless of how we arrange our data-blocks in memory and what are the logical connections between them. At this level, all algorithms can be reduced to one or some of the following operations.
+At the core of all algorithms are the fundamental operations that involve `accessing` and potentially `mutating` the data blocks, regardless of how we arrange our data-blocks in memory and what are the logical connections between them. At this level, all algorithms can be reduced to one or some of the following operations.
 
 ## Fundamental operations
 
@@ -224,7 +226,7 @@ Similar to array, but can grow at runtime. DynamicArray of pointers (or DynamicA
   - Swift: [contiguousarray](https://developer.apple.com/documentation/swift/contiguousarray) and [array](https://developer.apple.com/documentation/swift/array) are dynamic. When capacity is full, the size gets doubled.
   - Python: [list](https://docs.python.org/3/library/stdtypes.html#lists) is a dynamic array of pointers to other objects. The behavior is always like [Combination of CM and DCM data structures](#combination-of-cm-and-dcm-data-structures).
   - Java: [ArrayList](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) and [Vector](https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html) are dynamic and the difference is that vector is thread-safe.
-  - C#: [List](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-7.0) is a dynamic array.
+  - C#: [ArrayList](https://learn.microsoft.com/en-us/dotnet/api/system.collections.arraylist?view=net-7.0) and [List](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-7.0) are dynamic arrays. The difference is that `ArrayList` is non-generic and can store elements of any while `List<T>` is a generic class that provides type-safe collections.
   - JavaScript: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) is dynamic.
 
 #### RingBuffer
@@ -437,6 +439,8 @@ As it was the case for Queue data structure, [Array](#array) cannot be used as a
 1. Using a special [RingBuffer](#ringbuffer).
 2. Using an Array and allocating deque contents from the center of the underlying array, and resizing the underlying array when either end is reached.
 3. Storing contents in multiple smaller arrays, allocating additional arrays at the beginning or end as needed. Indexing is implemented by keeping a dynamic array containing pointers to each of the smaller arrays. In this case, the cost of resizing the array in step 2 is eliminated but different small arrays are not allocated contiguously in memory.
+
+
 - `Good`:
   - Random Access operation
 - `Not Good`
@@ -521,7 +525,7 @@ Other name is HashTable. The main idea behind a Hashtable is to use a hashing fu
 - Python: [Dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) is an unordered map created using HashTable.
 - Java: [HashTable](https://docs.oracle.com/javase/8/docs/api/java/util/Hashtable.html) is unordered, thread-safe. [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html) is unordered map created using HashTable.
 - C#: [Dictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-7.0) is an unordered map created using HashTable.
-- Javascript: XXX
+- Javascript: [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) is an unordered map.
 
 #### OrderedMap via HashTable and LinkedList
 A collection of key-value pairs. While the order of the insertion is preserved, the collection is not sorted.
@@ -533,13 +537,9 @@ A collection of key-value pairs. While the order of the insertion is preserved, 
 - `Not Good`:
   - No random access with `O(1)` because of LinkedList.
   - High overhead of extra storage for the forward and back reference.
-- Programming Languages implementations:
-  - CPP: -
-  - Swift: -  
+- Programming Languages implementations: 
   - Python: [OrderedDic](https://docs.python.org/3/library/collections.html#ordereddict-objects) is implemented using a combination of a doubly linked list and a dictionary.
   - Java: [LinkedHashMap](https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashMap.html). In Java, the LinkedHashMap class uses a combination of a hash table and a doubly linked list as its internal data structure to provide the functionality of a hash map with predictable iteration order.
-  - C#: -
-  - JavaScript
 
 #### SortedMap via Self Balancing Tree
 A collection of key-value pairs which is sorted by the key.
@@ -555,11 +555,11 @@ A collection of key-value pairs which is sorted by the key.
   - Python: Swift has no built-in Ordered map using tree data structure.
   - Java: [TreeMap](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html) is implemented using a Red-Black Tree as its internal data structure.
   - C#: [SortedDictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sorteddictionary-2?view=net-7.0) is implemented internally using a self-balancing binary search tree called a Red-Black Tree.
-  - JavaScript: 
+  - JavaScript: an implementation can be found [here](https://github.com/somdipdey/JavaScript-implementation-of-java.util.TreeMap-Class).
 
 ### Set
 #### UnorderedSet
-It is almost exactly like [UnorderedMap (HashTable)](#unorderedmap-hashtable) with the distinction that the node has only a key and no value exists. In Java, it is implemented using HashTable and the values for the nodes are set to a fixed value.
+It is almost exactly like [UnorderedMap or HashTable](#unorderedmap-or-hashtable) with the distinction that the node has only a key and no value exists. In Java, it is implemented using HashTable and the values for the nodes are set to a fixed value.
 - `Good`:
   - `O(1)` for search operation.
 - `Not Good`:
@@ -571,7 +571,7 @@ It is almost exactly like [UnorderedMap (HashTable)](#unorderedmap-hashtable) wi
 - Python: [Set](https://docs.python.org/3/tutorial/datastructures.html#sets) is an unordered set created using HashTable.
 - Java: [HashSet](https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html) is an unordered set created using HashTable.
 - C#: [HashSet](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-7.0)  is an unordered set created using HashTable.
-- Javascript: 
+- Javascript: [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) is an unordered set.
 
 #### OrderedSet via HashTable and LinkedList
 It is almost exactly like [OrderedMap via HashTable + LinkedList](#orderedmap-via-hashtable--linkedlist) with the distinction that the node has only a key and no value exists. In Java, it is implemented using HashTable and the values for the nodes are set to a fixed value.
@@ -580,12 +580,7 @@ It is almost exactly like [OrderedMap via HashTable + LinkedList](#orderedmap-vi
 - `Not Good`:
   - No random access with `O(1)` because of LinkedList.
 - Programming Languages implementations:
-  - CPP: -
-  - Swift: -  
-  - Python: -
   - Java: [LinkedHashSet](https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashSet.html). In Java, the LinkedHashSet class uses a combination of a hash table and a doubly linked list as its internal data structure to provide the functionality of a hash set with predictable iteration order.
-  - C#: -
-  - JavaScript
 
 
 #### SortedSet via Self Balancing Tree
@@ -601,10 +596,10 @@ It is almost exactly like [OrderedMap via HashTable + LinkedList](#orderedmap-vi
   - Python: Python has no built-in Ordered set. 
   - Java: [TreeSet](https://docs.oracle.com/javase/8/docs/api/java/util/TreeSet.html) is implemented using a Red-Black Tree as its internal data structure.
   - C#: [SortedSet](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sortedset-1?view=net-7.0) is implemented internally using a self-balancing binary search tree called a Red-Black Tree.
-  - JavaScript: 
+  - JavaScript: An implementation can be found [here](https://github.com/mljs/tree-set).
 
 ---
 
-## Non-Linear structures
+## Non-Linear data structures
 
 Coming soon
