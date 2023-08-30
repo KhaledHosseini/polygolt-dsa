@@ -57,10 +57,9 @@ Within the realm of programming languages, predefined data structures are a comm
 - [standard library data structures](#standard-library-data-structures)
   - [C++](#c)
   - [Swift](#swift)
-  - [C#](#c-1)
+  - [CSharp](#csharp)
   - [Python](#python)
   - [Java](#java)
-  - [Javascript](#javascript)
   - [Non-Linear data structures](#non-linear-data-structures)
   - [Algorithms](#algorithms-1)
 
@@ -82,7 +81,7 @@ The physical layer of a computer system is responsible for the actual storage an
 - Registers
 - Cache Memory
 - Main Memory (Random Access Memory - RAM)
-- Secondary memories: (HDD,SSD,...)<b>
+- Secondary memories: (HDD,SSD,...)<br>
 Physical memory is invisible to programs in virtual memory systems and as a programmer you're not required to reason about it.
 
 ### Virtual layer
@@ -126,7 +125,7 @@ At the core of all algorithms are the fundamental operations that involve `acces
   - updateDataAtFront()
   - updateDataAtBack()
 
-For example, `Linear search` algorithm uses `accessDataBySequence` and compare each item  with a specified value to find the answer while `Binary search` algorithm needs `accessDataAtRandomIndex` operation.<b> 
+For example, `Linear search` algorithm uses `accessDataBySequence` and compare each item  with a specified value to find the answer while `Binary search` algorithm needs `accessDataAtRandomIndex` operation.<br> 
 A note on `Random Access`: In the context of data structures, random access refers to the ability to instantly access a specific location. With [Array](#array), for instance, if you select a random index, the Array data structure can immediately provide you with the address of that index. However, if you attempt to access a random index in a [LinkedList](#linkedlist), the data structure cannot instantaneously provide the address. Instead, it must iterate from the beginning (starting from head) until it reaches the desired index. Consequently, LinkedLists are considered to have a time complexity of `O(n)` (Upper bound) for random access operation. Most algorithms require `O(1)` random access, and languages such as Java have introduced a marker interface(with no methods) called [RandomAccess](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/RandomAccess.java). This interface serves as a reminder that certain algorithms rely on random access. To ensure that these algorithms perform efficiently with your data structure, it is necessary to make it compatible with random access. The Swift equivalent is a marker protocol [RandomAccessCollection](https://github.com/apple/swift/blob/main/stdlib/public/core/RandomAccessCollection.swift).
 
 ### Fundamental Algorithms
@@ -203,7 +202,7 @@ Each data structure has the following characteristics:
 By employing one or a combination of the aforementioned concepts, basic data structures can be implemented, serving as the foundation for more intricate data structures. Additionally, the space and time complexities, as well as memory costs, can be readily analyzed by leveraging the complexities and costs associated with these fundamental concepts.
 
 #### Array
-In Programming languages, Arrays are built-in types. Array of pointers (or array of reference types) acts like [Combination of CM and DCM data structures](#combination-of-cm-and-dcm-data-structures). For primitive types (or value types like Int, enum, struct in C#,Swift,...) the behavior is like [Contiguous Memory data structures](#contiguous-memory-data-structures).
+In Programming languages, Arrays are built-in types. Array of pointers (or array of reference types) acts like [Combination of CM and DCM](#combination-of-cm-and-dcm). For primitive types (or value types like Int, enum, struct in C#,Swift,...) the behavior is like [Contiguous Memory data structures](#contiguous-memory-data-structures).
 - `Basic operations` time complexity: Same as [Contiguous Memory data structures](#contiguous-memory-data-structures)
 - `Good`: 
   - `accessAtRandomIndex`, `insertAtBack`, `removeAtBack` operations. 
@@ -224,7 +223,7 @@ In Programming languages, Arrays are built-in types. Array of pointers (or array
 ![Array_gif](files/Array_ManimCE_v0.17.3.gif)
 
 #### DynamicArray
-Similar to array, but can grow at runtime. DynamicArray of pointers (or DynamicArray of reference types) acts like [Combination of CM and DCM data structures](#combination-of-cm-and-dcm-data-structures). For primitive types (or value types like Int, enum, struct in C#,Swift,...) the behavior is like [Contiguous Memory data structures](#contiguous-memory-data-structures). Steps for resizing:
+Similar to array, but can grow at runtime. DynamicArray of pointers (or DynamicArray of reference types) acts like [Combination of CM and DCM](#combination-of-cm-and-dcm). For primitive types (or value types like Int, enum, struct in C#,Swift,...) the behavior is like [Contiguous Memory data structures](#contiguous-memory-data-structures). Steps for resizing:
   - allocate new array with new size
   - copy the old array values to the new array
   - delete the old array
@@ -240,10 +239,16 @@ Similar to array, but can grow at runtime. DynamicArray of pointers (or DynamicA
 - Programming Languages implementations:
   - Cpp: [Vector](https://cplusplus.com/reference/vector/vector/).
   - Swift: [contiguousarray](https://developer.apple.com/documentation/swift/contiguousarray) and [array](https://developer.apple.com/documentation/swift/array) are dynamic. When capacity is full, the size gets doubled.
-  - Python: [list](https://docs.python.org/3/library/stdtypes.html#lists) is a dynamic array of pointers to other objects. The behavior is always like [Combination of CM and DCM data structures](#combination-of-cm-and-dcm-data-structures). [UserList](https://docs.python.org/3/library/collections.html#collections.UserList) is a wrapper class that allows you to create your own list-like objects by inheriting from UserList and implementing certain methods. It provides a convenient way to create custom list-like classes without directly subclassing the built-in list class.
+  - Python: [list](https://docs.python.org/3/library/stdtypes.html#lists) is a dynamic array of pointers to other objects. The behavior is always like [Combination of CM and DCM](#combination-of-cm-and-dcm). [UserList](https://docs.python.org/3/library/collections.html#collections.UserList) is a wrapper class that allows you to create your own list-like objects by inheriting from UserList and implementing certain methods. It provides a convenient way to create custom list-like classes without directly subclassing the built-in list class.
   - Java: [ArrayList](https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html) and [Vector](https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html) are dynamic and the difference is that vector is thread-safe.
   - C#: [ArrayList](https://learn.microsoft.com/en-us/dotnet/api/system.collections.arraylist?view=net-7.0) and [List](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1?view=net-7.0) are dynamic arrays. The difference is that `ArrayList` is non-generic and can store elements of any while `List<T>` is a generic class that provides type-safe collections.
-  - JavaScript: [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) is dynamic.
+  - JavaScript: When it comes to Javascript, things are a little bit different. [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) is dynamic and you can add multiple types to it. As Array is an Object and Objects in javascript are HashTables, you can access indices of array using string of indices too!  Depending on the type of the values, the behavior of Javascript array is different. 
+    - In [V8 Engine](https://github.com/v8/v8) when Array only contains a single primitive type (like integer, float, ...) it’ll be backed by a C++ array of that type and the behavior is like [Contiguous Memory data structures](#contiguous-memory-data-structures).
+    - When Array contains more than one of primitive types, the array will be backed by a C++ array of the bigger one and the behavior is the same as above.
+    - If the array contains only objects, or a mixture of numbers and objects, it’ll backed by an array of pointers (primitive types will be boxed inside objects). The behavior is like [Combination of CM and DCM](#combination-of-cm-and-dcm).
+    - When you have a [sparse array](https://www.oreilly.com/library/view/javascript-the-definitive/9781449393854/ch07s03.html#:~:text=A%20sparse%20array%20is%20one,than%20the%20number%20of%20elements.) (WHY?) If it is not too spare, it’ll still be backed by an array, with empty array indices replaced with a ‘hole’ value. If an array is very sparse, it’ll no longer be backed by an array in memory. Instead, it will be backed by a dictionary/hashtable (The key is typically stored as a string representation of the index, and the value is the element itself).
+
+![god why god](https://media.giphy.com/media/Kg2tFStNdUsOmxv2GC/giphy.gif)
 
 #### RingBuffer
 A ring buffer is a specialized data structure implemented using an array. It is a static-sized buffer where read and write operations occur through two distinct pointers that iterate through the array in a circular manner.
@@ -364,7 +369,7 @@ Stack is a Last-In-First-Out(LIFO) data structure. Any data structure that is `G
 ![Stack via linkedlist](files/Stack_LinkedList_ManimCE_v0.17.3.gif)
 
 ##### Stack via deque
-[Deque](#deque) data structure can be implemented using [Deque via LinkedList](#deque-via-linkedlist) or [Deque via Array](#deque-via-array). The [Deque](#deque) can serve as a container for a Stack due to its behavior. C++ default container for Stack is deque.
+[Deque](#deque) data structure can be implemented using [Deque via DoubleLinkedList](#deque-via-doublelinkedlist) or [Deque via Array](#deque-via-array). The [Deque](#deque) can serve as a container for a Stack due to its behavior. C++ default container for Stack is deque.
 
 #### Queue
 Queue data structure is First-In-First-Out. Every data structure that is `Good` at addAtFront and removeAtBack or vice versa can be used as a container for Queue data structure. [DoubleLinkedList](#doublelinkedlist)(`Good` at add/remove at both ends) can be used as the containers for Queue data structure. Also [RingBuffer](#ringbuffer) can be used for fixed size queues. [DynamicArray:](#dynamicarray) is not a good container for queue data structure because of `O(n)` for insert operation. We can amortize this complexity using [Queue via Double Stack (Stack via DynamicArray)](#queue-via-double-stack-stack-via-dynamicarray). Another approach is storing contents in multiple smaller arrays, allocating additional arrays at the beginning or end as needed. Indexing is implemented by keeping a dynamic array or a LinkedList containing pointers to each of the smaller arrays. In this case, the cost of inserting reduced from `O(n)` to the `O(small_array.length)`. This approach is used for [deque](#deque-via-array). 
@@ -502,7 +507,7 @@ PriorityQueue is the same as [Queue](#queue) with one difference. The `dequeue` 
 
 
 ##### PriorityQueue via Deque
-[Deque](#deque) data structure can be implemented using either [Deque via LinkedList](#deque-via-linkedlist) or [Deque via Array](#deque-via-array) and PriorityQueue can use it as a container.
+[Deque](#deque) data structure can be implemented using either [Deque via DoubleLinkedList](#deque-via-doublelinkedlist) or [Deque via Array](#deque-via-array) and PriorityQueue can use it as a container.
 
 ##### PriorityQueue via BinaryHeap
 - `Methods`:
@@ -534,13 +539,13 @@ Other name is HashTable. The main idea behind a Hashtable is to use a hashing fu
 - `Not Good`:
   - Collection has no order. No Random access.
   - If LinkedList used for collision handling: Worst-case for search can be `O(n)` (All nodes collide). Average-case is not `O(1)`.
-
-- CPP: [unordered_map](https://cplusplus.com/reference/unordered_map/unordered_map/) is an unordered collection created using HashTable. Another version is [unordered_multimap](https://cplusplus.com/reference/unordered_map/unordered_multimap/) that allows for repetitive keys. in the [unordered_map](https://cplusplus.com/reference/unordered_map/unordered_map/) version the keys are unique.
-- Swift: [Dictionary](https://developer.apple.com/documentation/swift/dictionary) is an unordered collection created using HashTable. The keys are unique.
-- Python: [dict](https://docs.python.org/3/library/stdtypes.html#mapping-types-dict) is an unordered map created using HashTable. Also [Counter](https://docs.python.org/3/library/collections.html#collections.Counter) is a dictionary specific to counting of values (the key is the item you put in the dictionary and the value is a counter. on each insert, if the value exists, 1 is added to the count). [UserDict](https://docs.python.org/3/library/collections.html#collections.UserDict) is a wrapper class that allows you to create your own dictionary-like objects by inheriting from UserDict and implementing certain methods. It provides a convenient way to create custom dictionary-like classes without directly subclassing the built-in dict class. [mappingproxy](https://docs.python.org/3/library/types.html#types.MappingProxyType) object provides read-only access to the original dictionary's data.
-- Java: [HashTable](https://docs.oracle.com/javase/8/docs/api/java/util/Hashtable.html) is unordered, thread-safe. [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html) is unordered map created using HashTable.
-- C#: [Dictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-7.0) is an unordered map created using HashTable. [ListDictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.specialized.listdictionary?view=net-7.0) uses a combination of array (for keys) and LinkedList (for values). Operations are all `O(n)` and it MUST be used for small collections (Less than 10 items). 
-- Javascript: [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) is an unordered map.
+- Programming Languages implementations: 
+  - CPP: [unordered_map](https://cplusplus.com/reference/unordered_map/unordered_map/) is an unordered collection created using HashTable. Another version is [unordered_multimap](https://cplusplus.com/reference/unordered_map/unordered_multimap/) that allows for repetitive keys. in the [unordered_map](https://cplusplus.com/reference/unordered_map/unordered_map/) version the keys are unique.
+  - Swift: [Dictionary](https://developer.apple.com/documentation/swift/dictionary) is an unordered collection created using HashTable. The keys are unique.
+  - Python: [dict](https://docs.python.org/3/library/stdtypes.html#mapping-types-dict) is an unordered map created using HashTable. Also [Counter](https://docs.python.org/3/library/collections.html#collections.Counter) is a dictionary specific to counting of values (the key is the item you put in the dictionary and the value is a counter. on each insert, if the value exists, 1 is added to the count). [UserDict](https://docs.python.org/3/library/collections.html#collections.UserDict) is a wrapper class that allows you to create your own dictionary-like objects by inheriting from UserDict and implementing certain methods. It provides a convenient way to create custom dictionary-like classes without directly subclassing the built-in dict class. [mappingproxy](https://docs.python.org/3/library/types.html#types.MappingProxyType) object provides read-only access to the original dictionary's data.
+  - Java: [HashTable](https://docs.oracle.com/javase/8/docs/api/java/util/Hashtable.html) is unordered, thread-safe. [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html) is unordered map created using HashTable.
+  - C#: [Dictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2?view=net-7.0) is an unordered map created using HashTable. [ListDictionary](https://learn.microsoft.com/en-us/dotnet/api/system.collections.specialized.listdictionary?view=net-7.0) uses a combination of array (for keys) and LinkedList (for values). Operations are all `O(n)` and it MUST be used for small collections (Less than 10 items). 
+  - Javascript: [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) is an unordered map.
 
 ##### OrderedMap via HashTable and LinkedList
 A collection of key-value pairs. While the order of the insertion is preserved, the collection is not sorted.
@@ -595,16 +600,16 @@ It is almost exactly like [UnorderedMap or HashTable](#unorderedmap-or-hashtable
 - `Not Good`:
   - Collection has no order. No Random access.
   - If LinkedList used for collision handling: Worst-case for search can be `O(n)`. Average-case is not `O(1)`.
-
-- CPP: [unordered_set](https://cplusplus.com/reference/unordered_set/unordered_set/) is an unordered collection created using HashTable. Another version is [unordered_multiset](https://cplusplus.com/reference/unordered_set/unordered_multiset/) that allows for duplicate keys. in the [unordered_set](https://cplusplus.com/reference/unordered_set/unordered_set/) version the keys are unique.
-- Swift: [Set](https://developer.apple.com/documentation/swift/set) is an unordered collection created using HashTable. The keys are unique.
-- Python: [Set](https://docs.python.org/3/tutorial/datastructures.html#sets) is an unordered set created using HashTable. [frozenset](https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset) is an immutable set.
-- Java: [HashSet](https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html) is an unordered set created using HashTable.
-- C#: [HashSet](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-7.0)  is an unordered set created using HashTable.
-- Javascript: [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) is an unordered set.
+- Programming Languages implementations:
+  - CPP: [unordered_set](https://cplusplus.com/reference/unordered_set/unordered_set/) is an unordered collection created using HashTable. Another version is [unordered_multiset](https://cplusplus.com/reference/unordered_set/unordered_multiset/) that allows for duplicate keys. in the [unordered_set](https://cplusplus.com/reference/unordered_set/unordered_set/) version the keys are unique.
+  - Swift: [Set](https://developer.apple.com/documentation/swift/set) is an unordered collection created using HashTable. The keys are unique.
+  - Python: [Set](https://docs.python.org/3/tutorial/datastructures.html#sets) is an unordered set created using HashTable. [frozenset](https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset) is an immutable set.
+  - Java: [HashSet](https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html) is an unordered set created using HashTable.
+  - C#: [HashSet](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1?view=net-7.0)  is an unordered set created using HashTable.
+  - Javascript: [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) is an unordered set.
 
 ##### OrderedSet via HashTable and LinkedList
-It is almost exactly like [OrderedMap via HashTable + LinkedList](#orderedmap-via-hashtable--linkedlist) with the distinction that the node has only a key and no value exists. In Java, it is implemented using HashTable and the values for the nodes are set to a fixed value.
+It is almost exactly like [OrderedMap via HashTable and LinkedList](#orderedmap-via-hashtable-and-linkedlist) with the distinction that the node has only a key and no value exists. In Java, it is implemented using HashTable and the values for the nodes are set to a fixed value.
 - `Good`:
   - Order of the insertion is preserved. (Unlike SortedSet, the keys are not sorted.)
 - `Not Good`:
@@ -642,7 +647,7 @@ It is almost exactly like [OrderedMap via HashTable + LinkedList](#orderedmap-vi
 Swift source code for collections can be found [here](https://github.com/apple/swift/tree/main/stdlib/public/core).
 ![Swift ds diagram](files/Swift_DS&A_Hierarchy.drawio.svg)
 
-### C#
+### CSharp
 Dotnet source code for collections can be found [here](https://github.com/dotnet/runtime/tree/f175acf52f1e793892ef9d9fea632f3624d50479/src/libraries/System.Private.CoreLib/src/System/Collections).
 
 ![C# ds diagram](files/Dotnet_DS&A_Hierarchy.drawio.svg)
@@ -656,8 +661,6 @@ Source code for python built-in types can be found [here](https://github.com/pyt
 Java collections source code is located [here](https://github.com/openjdk/jdk/tree/master/src/java.base/share/classes/java/util).
 
 ![Java ds diagram](files/Java_DS&A_Hierarchy.drawio.svg)
-
-### Javascript
 
 
 ---
