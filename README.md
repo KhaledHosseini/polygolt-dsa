@@ -1,5 +1,7 @@
 ![Header](files/header.png)
 
+The link to the article at [dev.to](https://dev.to/khaledhosseini/data-structures-and-algorithms-for-multi-language-programmers-c-swift-python-java-c-javascript-alp)
+
 Within the realm of programming languages, predefined data structures are a common inclusion, albeit with variations in names and implementation details across different languages. Although these discrepancies exist, the fundamental principles underlying these structures remain consistent. In this article, we embark on an immersive exploration of data structures, delving into their internal implementations across a range of programming languages. To aid comprehension, we enhance the learning experience with concise animations, offering an intuitive grasp of these essential concepts. Although the title specifically mentions "Multi-language programmers," it is evident that mono-language programmers can also derive significant benefits from this article.This article marks the beginning of a series, where we delve into a range of essential topics. The series will cover the following main subjects:
 - Linear data structures
 - Non-linear data structures
