@@ -27,6 +27,7 @@ Within the realm of programming languages, predefined data structures are a comm
     - [DynamicArray](#dynamicarray)
     - [RingBuffer](#ringbuffer)
     - [LinkedList](#linkedlist)
+    - [FreeList](#freelist)
     - [DoubleLinkedList](#doublelinkedlist)
     - [CircularLinkedList](#circularlinkedlist)
     - [CircularDoubleLinkedList](#circulardoublelinkedlist)
@@ -56,13 +57,32 @@ Within the realm of programming languages, predefined data structures are a comm
       - [UnorderedSet](#unorderedset)
       - [OrderedSet via HashTable and LinkedList](#orderedset-via-hashtable-and-linkedlist)
       - [SortedSet via Self Balancing Tree](#sortedset-via-self-balancing-tree)
-- [standard library data structures](#standard-library-data-structures)
-  - [C++](#c)
-  - [Swift](#swift)
-  - [CSharp](#csharp)
-  - [Python](#python)
-  - [Java](#java)
-  - [Non-Linear data structures](#non-linear-data-structures)
+    - [SkipList](#skiplist)
+    - [standard library data structures](#standard-library-data-structures)
+      - [C++](#c)
+      - [Swift](#swift)
+      - [CSharp](#csharp)
+      - [Python](#python)
+      - [Java](#java)
+  - [Non-Linear structures](#non-linear-structures)
+    - [Tree](#tree)
+      - [General Tree](#general-tree)
+      - [k-ary Tree](#k-ary-tree)
+      - [BinaryTree](#binarytree)
+        - [BinarySearchTree](#binarysearchtree)
+        - [AVLTree](#avltree)
+        - [RedBlackTree](#redblacktree)
+        - [B Tree](#b-tree)
+        - [Splay Tree](#splay-tree)
+        - [KD Tree](#kd-tree)
+        - [HeapTree](#heaptree)
+        - [Cartesian Tree](#cartesian-tree)
+        - [Fibonacci Heap](#fibonacci-heap)
+        - [Segment Tree](#segment-tree)
+        - [Merkle Tree](#merkle-tree)
+      - [Trie](#trie)
+    - [Graph](#graph)
+- [Augmented data structures](#augmented-data-structures)
   - [Algorithms](#algorithms-1)
 
 
@@ -250,8 +270,6 @@ Similar to array, but can grow at runtime. DynamicArray of pointers (or DynamicA
     - If the array contains only objects, or a mixture of numbers and objects, it’ll backed by an array of pointers (primitive types will be boxed inside objects). The behavior is like [Combination of CM and DCM](#combination-of-cm-and-dcm).
     - When you have a [sparse array](https://www.oreilly.com/library/view/javascript-the-definitive/9781449393854/ch07s03.html#:~:text=A%20sparse%20array%20is%20one,than%20the%20number%20of%20elements.) (WHY?) If it is not too spare, it’ll still be backed by an array, with empty array indices replaced with a ‘hole’ value. If an array is very sparse, it’ll no longer be backed by an array in memory. Instead, it will be backed by a dictionary/hashtable (The key is typically stored as a string representation of the index, and the value is the element itself).
 
-![god why god](https://media.giphy.com/media/Kg2tFStNdUsOmxv2GC/giphy.gif)
-
 #### RingBuffer
 A ring buffer is a specialized data structure implemented using an array. It is a static-sized buffer where read and write operations occur through two distinct pointers that iterate through the array in a circular manner.
 
@@ -296,6 +314,48 @@ A ring buffer is a specialized data structure implemented using an array. It is 
 
 ![LinkedList gif](files/LinkedList_ManimCE_v0.17.3.gif)
 
+#### FreeList
+As you have noticed, one of the `Not Good`s of a LinkedList data structure is dynamic memory allocation. It means, whenever you need a new node, you have to create a new one dynamically using `new` keyword. Dynamic memory allocation is a heavy task. One way of resolving this issue is to use FreeLists. FreeLists can be thought of as a reservoir for the LinkedList nodes. One approach is to initialize a FreeList with a sequence of nodes and whenever you need a Node for your LinkedList, you get one from the FreeList instance and when you remove a Node from the LinkedList, you will not free the memory, but return it to the FreeList reservoir to be used again later. Another approach is the following implementation for LinkedListNode with a private static freelist.
+```Java
+class LinkListNode<E> {      // Singly linked list node with freelist support
+    // Extensions to support freelists
+    private static LinkListNode freelist = null;                  // Freelist for the class
+    
+    private E value;       // Value for this node
+    private LinkListNode<E> next;    // Point to next node in list
+    // Constructors
+    LinkList(E it, LinkListNode<E> inn) { value = it; next = inn; }
+    LinkList(LinkListNode<E> inn) { value = null; next = inn; }
+
+    E element() { return value; }                        // Return the value
+    E setElement(E it) { return value = it; }            // Set element value
+    LinkListNode<E> next() { return next; }                     // Return next link
+    LinkListNode<E> setNext(LinkListNode<E> inn) { return next = inn; } // Set next link
+
+    // Return a new link, from freelist if possible
+    static <E> LinkListNode<E> get(E it, LinkListNode<E> inn) {
+      if (freelist == null) {
+        return new LinkListNode<E>(it, inn);                 // Get from "new"
+      }
+      LinkListNode<E> temp = freelist;                       // Get from freelist
+      freelist = freelist.next();
+      temp.setElement(it);
+      temp.setNext(inn);
+      return temp;
+    }
+
+    // Return a link node to the freelist
+    void release() {
+      value = null;   // Drop reference to the element
+      next = freelist;
+      freelist = this;
+    }
+  }
+```
+- `Not good`: 
+  - Depending on the situations, we may have unused memory.
+
+
 #### DoubleLinkedList
 ![DoubleLinkedList](files/double_linked_list.drawio.svg)
 
@@ -306,7 +366,7 @@ A ring buffer is a specialized data structure implemented using an array. It is 
   - `insertAtFront`, `removeAtFront`, `insertAtBack`, `removeAtBack` operations. 
 - `Not good`: 
   - `accessAtRandomIndex`, `insertAtMiddle` Operations. 
-  - Dynamic memory allocation (slow).
+  - Dynamic memory allocation (slow). We can fix this issue using [FreeList](#freelist).
   - High overhead of extra storage for the forward and back reference.
 - Programming Languages implementations:
   - Cpp: [list](https://cplusplus.com/reference/list/list/) is doubly linkedList.
@@ -635,31 +695,33 @@ It is almost exactly like [OrderedMap via HashTable and LinkedList](#orderedmap-
   - C#: [SortedSet](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sortedset-1?view=net-7.0) is implemented internally using a self-balancing binary search tree called a Red-Black Tree.
   - JavaScript: An implementation can be found [here](https://github.com/mljs/tree-set).
 
+#### SkipList
+
 
 ---
 
 
-## standard library data structures
+#### standard library data structures
 
-### C++
+##### C++
 
 ![Cpp dsa](files/Cpp_DS&A_Hierarchy.drawio.svg)
 
-### Swift
+##### Swift
 Swift source code for collections can be found [here](https://github.com/apple/swift/tree/main/stdlib/public/core).
 ![Swift ds diagram](files/Swift_DS&A_Hierarchy.drawio.svg)
 
-### CSharp
+##### CSharp
 Dotnet source code for collections can be found [here](https://github.com/dotnet/runtime/tree/f175acf52f1e793892ef9d9fea632f3624d50479/src/libraries/System.Private.CoreLib/src/System/Collections).
 
 ![C# ds diagram](files/Dotnet_DS&A_Hierarchy.drawio.svg)
 
-### Python
+##### Python
 Source code for python built-in types can be found [here](https://github.com/python/cpython/blob/main/Objects). Collection module source code is located [here](https://github.com/python/cpython/blob/3.11/Lib/collections/__init__.py).
 
 ![python dsa](files/Python_DS&A_Hierarchy.drawio.svg)
 
-### Java
+##### Java
 Java collections source code is located [here](https://github.com/openjdk/jdk/tree/master/src/java.base/share/classes/java/util).
 
 ![Java ds diagram](files/Java_DS&A_Hierarchy.drawio.svg)
@@ -667,11 +729,286 @@ Java collections source code is located [here](https://github.com/openjdk/jdk/tr
 
 ---
 
+### Non-Linear structures
+From a mathematical standpoint, LinkedLists can be regarded as a particular variation of graphs. However, graphs encompass more intricate structures, commonly referred to as trees and graph data structures, within the realm of programming.
+
+#### Tree
+In the context of data structures and algorithms, a "tree" refers to a hierarchical data structure composed of nodes connected by edges. Common elements of a tree are depicted in the following picture.
+
+![Tree](files/tree.png)
+
+- Memory representation<br>
+ Linear data structures can be represent in memory either like [Contiguous Memory](#contiguous-memory-data-structures),  [Dis-contiguous memory data structures](#discontiguous-memory-data-structures) or a [Combination of both (Array of pointers)](#combination-of-cm-and-dcm). In case of non-linear data structures like Trees we use the same concepts to represent the data in the memory. Each memory representation has it's own pros and cons.
+  -  `Linked representation`:  In this representation, each node of the tree is represented as an object or struct that contains the data and references (pointers) to its children or parent nodes. This representation allows for flexible tree structures but may require additional memory for storing the pointers.
+  - `Array representation`: The elements of the array correspond to the values of the tree. The relationship between nodes is determined by the indices of the array elements. This representation is simple and memory-efficient but may require resizing the array for dynamic trees and the implementation is possible for trees with fixed numbers of children like k-ary and binary trees.
+  - `Array of pointers representation`: The elements of the array correspond to the nodes of the tree. Depending on the implementation, nodes hold different information.
+- Types of trees based on the number of the child nodes.
+  - n-ary trees (general trees) or the trees with arbitrary number of children per node.
+  - k-ary trees or the trees with maximum number of k children per node.
+    - k == 2: Binary trees.
+- Fundamental operations<br>
+[Fundamental operations](#fundamental-operations) in linear data structures are typically straightforward in terms of their implementation and functionality. For example, in [Array](#array) the `accessDataBySequence()` operation can be achieved by iterating from the start index to the end index of the array. For [LinkedList](#linkedlist) this operation is done by iterating from the head toward the end of the list. The order of the data-blocks in an array is implicitly determined by the order of them in the contiguous memory and start and end indices are the start and the end of the array. In case of LinkedLists the order of the nodes are determined explicitly by pointers from one node to the next one and the start and end indices are head and tail of the LinkedList. But imagine a Tree data structure like above picture. How you iterate over the nodes? Where is the start index and where is the end index? What is the order of the nodes? `Fundamental operations` for Trees are not as straightforward as for linear data structures. Depending on the `implementation` and the `memory representation` of a tree, fundamental operations for trees can be achieved differently.
+  - `accessDataBySequence()`:
+    - Depth-First traversal
+      - PreOrder traversal: ParentNode -> Left -> Right (NLR)
+      - InOrder traversal: Left -> ParentNode -> Right (LNR). Applicable for BinaryTree.
+      - PostOrder traversal: Left -> Right -> ParentNode (LRN)
+    - Breadth-first traversal
+      - level-order traversal
+  - `accessAtRandomIndex()`
+  - `insertAtRandomIndex()`
+  - `removeAtRandomIndex()`
+
+ ![Tree traversal](files/tree%20traversal.drawio.svg)
+
+##### General Tree
+A `general tree`, also known as an `n-ary tree`, is a hierarchical tree structure where each node can have an arbitrary number of child nodes. There are several `representations` for general trees:
+- List of children: DynamicArray of TreeNodes. Children are a LinkedList of TreeNodes indices.
+  ![Dynamic array of TreeNode](files/List%20of%20children%20DynamicArray%20of%20TreeNode.drawio.svg)
+    ```swift
+    public class ChildIndex {
+      var index: Int
+      var next: ChildIndex?
+    }
+    public struct TreeNode<T> {
+      var value: T
+      var children: ChildIndex?
+    }
+    var tree: [TreeNode] = []
+    ```
+- List of children: LinkedList of TreeNodes. Children are a dynamicArray of pointers of TreeNodes
+  ![LinkedList of DynamicArray of children](files/List%20fo%20children%20LinkedList%20of%20dynamicArray%20of%20children.drawio.svg)
+    ```swift
+    public class TreeNode<T> {
+      public var value: T
+      public var children: [TreeNode<T>]
+    }
+    ```
+- List of children: LinkedList of TreeNodes. Children are LinkedList of pointers.
+  ![LinkedList fo children](files/List%20fo%20children%20LinkedList%20of%20children.drawio.svg)
+    ```swift
+    public class ChildPointer<T> {
+      var node: TreeNode<T>
+      var next: ChildPointer<T>?
+    }
+    public class TreeNode<T> {
+      var value: T
+      // A linkedlist of children
+      var children_head:ChildPointer<T>?
+    }
+    
+    var tree: TreeNode = TreeNode(value: 0)
+    //...
+    ```
+- Left-Child, Right-sibling: Array of TreeNodes
+  ![Left child right sibling](files/Left%20child%20right%20sibling.drawio.svg)
+    ```swift
+    public struct TreeNode<T> {
+      public var value: T
+      public var LeftChildIndex: Int
+      public var ParentIndex: Int
+      public var RightSiblingIndex: Int
+    }
+    ```
+- Dynamic Left-Child, Right-Sibling: LinkedList of TreeNodes<br>
+  ![Dynamic Left-Child, Right-Sibling](files/dynamic%20left%20child%20right%20sibling.drawio.svg)
+    ```swift
+    public class TreeNode<T> {
+      public var value: T
+      public var LeftChild: TreeNode<T>?
+      public var RightSibling: TreeNode<T>?
+    }
+    ```
+- Parent pointer<br>
+  ![Parent pointer](files/parent%20pointer.drawio.svg)
 
 
-### Non-Linear data structures
+Each of above representations can be useful for a specific type of problem. For example, to answer the question "Given two nodes, are they in the same tree?", the best representation is Parent pointer. Also this representation is used to save tress in the SQL databases. We can use algorithmic methods to convert between different representations. Regarding fundamental operations, depending on the representation, these operations can be implemented differently for general trees.
 
-Coming soon
+##### k-ary Tree
+Trees with a maximum number of children per nodes are called k-ary trees. Other than the above `representations` for general trees which are also applicable here, k-ary trees can be represented in a more memory-efficient way using arrays. Please note that array representation is not suitable for insert/remove operations.
+- Array representation
+  
+  ![Array representation](files/k-ary%20tree%20array%20representation.drawio.svg)
+
+If k == 2, then the tree is called BinaryTree.
+
+##### BinaryTree
+Binary trees are a special kind of k-ary trees with k = 2 (the trees with maximum two children per node). This types of trees can easily be represented with both LinkedList or Array representations. Binary trees serve as the basis for many tree structures and algorithms. 
+
+![Binary tree types](files/binarytree%20types.drawio.svg)
+
+The most common way for representing dynamic binary trees is LinkedList representation.
+```swift
+  public class BinaryNode<T> {
+    public var value: T
+    public var leftChild: BinaryNode?
+    public var rightChild: BinaryNode?
+  }
+``` 
+
+- `Fundamental operations`:
+  - `accessDataBySequence()`
+    - Depth-First traversal
+      - PreOrder traversal: ParentNode -> Left -> Right (NLR)
+        ```swift
+        extension BinaryNode {
+          public func traversePreOrder(visit: (T) -> Void) {
+            visit(value)
+            leftChild?.traversePreOrder(visit: visit)
+            rightChild?.traversePreOrder(visit: visit)
+          }
+        }
+        ```
+      - InOrder traversal: Left -> ParentNode -> Right (LNR)
+      ```swift
+      extension BinaryNode {
+        public func traverseInOrder(visit: (T) -> Void) {
+          leftChild?.traverseInOrder(visit: visit)
+          visit(value)
+          rightChild?.traverseInOrder(visit: visit)
+        }
+      }
+      ```
+      - PostOrder traversal: Left -> Right -> ParentNode (LRN)
+      ```swift
+      extension BinaryNode {
+        public func traversePreOrder(visit: (T) -> Void) {
+          visit(value)
+          leftChild?.traversePreOrder(visit: visit)
+          rightChild?.traversePreOrder(visit: visit)
+        }
+      }
+      ```
+    - Breadth-first traversal
+      - level-order traversal
+      ```swift
+      extension BinaryNode {
+        public func forEachLevelOrder(visit: (BinaryNode?) -> Void) {
+        visit(self)
+        var queue = Queue<BinaryNode?>()
+        queue.enqueue(leftChild)
+        queue.enqueue(rightChild)
+        while let node = queue.dequeue() {
+            visit(node)
+            queue.enqueue(node.leftChild)
+            queue.enqueue(node.rightChild)
+          }
+        }
+      }
+      ```
+
+###### BinarySearchTree
+BinarySearchTree is special type of BinaryTree with two rules:
+- The value of the left child must be less then the value of the parent
+- The value of the right child must be bigger or equal to the parent value.
+
+![BinarySearchTree](files/binary%20search%20tree.drawio.svg)
+
+For dynamic BinarySearchTree (with insert/remove) we use LinkedList representation.
+
+Algorithms:
+- accessDataBySequence():
+  - in-order traversal: See [BinaryTree](#binarytree)
+  - pre-order traversal: See [BinaryTree](#binarytree)
+  - post-order traversal: See [BinaryTree](#binarytree)
+- insert: We search(using either of the traversal algorithms) and then insert the value. Time complexity for the search is `O(log(n))` for balanced trees.
+- remove: We search(using either of the traversal algorithms) and then insert the value. Time complexity for the search is `O(log(n))` for balanced trees.
+- search: We search using either of the traversal algorithms. Time complexity for the search is `O(log(n))` for balanced trees. for unbalanced trees, the time complexity becomes `O(n)`.
+
+If a BinarySearchTree becomes unbalanced, the time complexity of operations degrade from `O(log(n))` to `O(n)`. To resolve this issue, self-balancing trees like [AVLTree](#avltree), [Red Black Tree](#redblacktree) and [B Tree](#b-tree) are introduced. The AVL trees are more balanced compared to Red-Black Trees, but they may cause more rotations during insertion and deletion. So if your application involves frequent insertions and deletions, then Red-Black trees should be preferred. And if the insertions and deletions are less frequent and search is a more frequent operation, then AVL tree should be preferred over the Red-Black Tree. B-Trees are characterized by the large number of keys that they can store in a single node, which is why they are also known as “large key” trees. Each node in a B-Tree can contain multiple keys, which allows the tree to have a larger branching factor and thus a shallower height. This shallow height leads to less disk I/O, which results in faster search and insertion operations.
+
+###### AVLTree
+If a BinarySearchTree becomes unbalanced, the time complexity of operations all degrade from `O(log(n))` to `O(n)`. To resolve this issue self-balancing BinarySearchTrees have been introduced. One of them is AVL Tree. This BinarySearchTree keep itself balanced via self-balancing algorithms. Keeping the tree balanced guarantees the time complexity of operations to be `O(log(n))`.
+
+Algorithms:
+- accessDataBySequence():
+  - in-order traversal: See [BinarySearchTree](#binarysearchtree)
+  - pre-order traversal: See [BinarySearchTree](#binarysearchtree)
+  - post-order traversal: See [BinarySearchTree](#binarysearchtree)
+- insert: The insertion for [BinarySearchTree](#binarysearchtree) is changed to include the self-balancing algorithm so that the insertion does not make the tree unbalanced.
+- remove: The removal for [BinarySearchTree](#binarysearchtree) is changed to include the self-balancing algorithm so that the removal does not make the tree unbalanced.
+- search: See [BinarySearchTree](#binarysearchtree)
+- balancing algorithms.
+  - left-Rotation
+  - right-rotation
+  - left-right rotation
+  - right-left rotation
+
+###### RedBlackTree
+If a BinarySearchTree becomes unbalanced, the time complexity of operations all degrade from `O(log(n))` to `O(n)`. To resolve this issue self-balancing BinarySearchTrees have been introduced. One of them is RedBlackTree. This BinarySearchTree keep itself balanced via self-balancing algorithms. Keeping the tree balanced guarantees the time complexity of operations to be `O(log(n))`. The rules by which the tree is kept balanced by RedBlackTree are:
+1. Every node has a color either red or black.
+2. The root of the tree is always black.
+3. There are no two adjacent red nodes (A red node cannot have a red parent or red child).
+4. Every path from a node (including root) to any of its descendants NULL nodes has the same number of black nodes.
+5. Every leaf (e.i. NULL node) must be colored BLACK.
+
+###### B Tree
+If a BinarySearchTree becomes unbalanced, the time complexity of operations all degrade from `O(log(n))` to `O(n)`. To resolve this issue self-balancing BinarySearchTrees have been introduced. One of them is B-Tree. This BinarySearchTree keep itself balanced via self-balancing algorithms. Keeping the tree balanced guarantees the time complexity of operations to be `O(log(n))`. Unlike traditional binary search trees, B-Trees are characterized by the large number of keys that they can store in a single node, which is why they are also known as “large key” trees. Each node in a B-Tree can contain multiple keys, which allows the tree to have a larger branching factor and thus a shallower height. This shallow height leads to less disk I/O, which results in faster search and insertion operations.
+
+###### Splay Tree
+A splay tree is a binary search tree with the additional property that recently accessed elements are quick to access again. Like self-balancing binary search trees, a splay tree performs basic operations such as insertion, look-up and removal in O(log n) amortized time. To keep itself organized, Splay Tree uses the following self-organizing algorithms.
+1. Zig Rotation
+2. Zag Rotation
+3. Zig – Zig Rotation
+4. Zag – Zag Rotation
+5. Zig – Zag Rotation
+6. Zag – Zig Rotation
+
+###### KD Tree
+A K-D Tree(also called as K-Dimensional Tree) is a binary search tree where data in each node is a K-Dimensional point in space. In short, it is a space partitioning(details below) data structure for organizing points in a K-Dimensional space.
+
+###### HeapTree
+Algorithms:
+- insert
+- remove
+- remove(at: )
+- findIndexOf(:)
+
+###### Cartesian Tree
+
+###### Fibonacci Heap
+
+
+###### Segment Tree
+
+###### Merkle Tree
+a hash tree or Merkle tree is a tree in which every "leaf" (node) is labelled with the cryptographic hash of a data block, and every node that is not a leaf (called a branch, inner node, or inode) is labelled with the cryptographic hash of the labels of its child nodes. A hash tree allows efficient and secure verification of the contents of a large data structure. A hash tree is a generalization of a hash list and a hash chain.
+
+##### Trie
+Algorithms:
+- insert
+- contain
+- remove
+- hasPrefix
+
+#### Graph
+Vertex, Edge, ...
+Representation:
+- AdjacencyList:
+  - Algorithms:
+    - addvertex
+    - addEdge
+    - findEdge
+    - findWeight
+- Adjacency matrix
+  - Algorithms:
+    - addvertex
+    - addEdge
+    - findEdge
+    - findWeight
+
+Algorithms:
+- Search:
+  - BreadthFirstSearch:
+  - Depth-First Search: 
+  - Dijkstra’s Algorithm (Path finding): 
+  - Prim’s Algorithm (minimum spanning tree)
+
+
+---
+
+## Augmented data structures
 
 ### Algorithms
 
