@@ -289,12 +289,12 @@ A ring buffer is a specialized data structure implemented using an array. It is 
   - Fixed size.
   - Write operations may fail if the frequency of writes exceeds the frequency of reads.
 - Programming Languages implementations:
-  - Cpp: Has no built-in implementation for LinkedList. [Here](https://www.boost.org/doc/libs/1_77_0/doc/html/circular_buffer.html) is an implementation.
-  - Swift: Has no built-in implementation for LinkedList. [Here](https://github.com/kodecocodes/swift-algorithm-club/blob/master/Ring%20Buffer/RingBuffer.swift) is an implementation.
-  - Python: Has no built-in implementation for LinkedList. [Here](https://gist.github.com/edwintcloud/f998e15d839e17ebcae2b8e2bb1d8d8c) is an implementation.
-  - Java: Has no built-in implementation for LinkedList. [Here](https://www.geeksforgeeks.org/java-program-to-implement-circular-buffer/) is an implementation.
-  - C#: Has no built-in implementation for LinkedList. [Here](https://github.com/joaoportela/CircularBuffer-CSharp) is an implementation.
-  - JavaScript: Has no built-in implementation for LinkedList. [Here](https://github.com/trevnorris/cbuffer) is an implementation.
+  - Cpp: Has no built-in implementation for RingBuffer. [Here](https://www.boost.org/doc/libs/1_77_0/doc/html/circular_buffer.html) is an implementation.
+  - Swift: Has no built-in implementation for RingBuffer. [Here](https://github.com/kodecocodes/swift-algorithm-club/blob/master/Ring%20Buffer/RingBuffer.swift) is an implementation.
+  - Python: Has no built-in implementation for RingBuffer. [Here](https://gist.github.com/edwintcloud/f998e15d839e17ebcae2b8e2bb1d8d8c) is an implementation.
+  - Java: Has no built-in implementation for RingBuffer. [Here](https://www.geeksforgeeks.org/java-program-to-implement-circular-buffer/) is an implementation.
+  - C#: Has no built-in implementation for RingBuffer. [Here](https://github.com/joaoportela/CircularBuffer-CSharp) is an implementation.
+  - JavaScript: Has no built-in implementation for RingBuffer. [Here](https://github.com/trevnorris/cbuffer) is an implementation.
 
 #### LinkedList
 ![LinkedList](files/linked_list.drawio.svg)
